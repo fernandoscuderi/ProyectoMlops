@@ -116,18 +116,18 @@ def get_actor(nombre_actor):
 @app.get("/get_director/{nombre_director}")
 def get_director(nombre_director):
 
-    peliculas = []
-    fecha = []
-    retorno_individual = []
-    costo = []
-    ganancia =[]
-    cantidad_retorno = 0
-
     directores = df["crew"]
 
     nombreEntero = nombre_director.split()
     nombreEnteroMayus = [palabra.capitalize() for palabra in nombreEntero]
     nombreMayus = ' '.join(nombreEnteroMayus)
+
+    cantidad_retorno = 0
+    peliculas = []
+    fecha = []
+    retorno_individual = []
+    costo = []
+    ganancia =[]
 
     for i, lista in enumerate(directores):
 
@@ -139,9 +139,9 @@ def get_director(nombre_director):
             costo.append(df["budget"][i])
             ganancia.append(df["revenue"][i])
 
-    dfDirector = pd.DataFrame({'Peliculas': peliculas, 'Fecha': fecha, 'Retorno Individual': retorno_individual, "Costo" : costo, "Ganancia": ganancia})
- 
+    #dfDirector = pd.DataFrame({'Peliculas': peliculas, 'Fecha': fecha, 'Retorno Individual': retorno_individual, "Costo" : costo, "Ganancia": ganancia})
+    
     if peliculas:
-        return dfDirector
+        return {"Director": nombreMayus, "Retorno Total":cantidad_retorno, "Peliculas": peliculas, "Fecha": fecha, "Retorno_individual": retorno_individual, "Costo":costo, "Ganancia":ganancia}
     else: return "El director no fue encontrado"
     
