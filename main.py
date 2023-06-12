@@ -177,7 +177,8 @@ df["overview"] = df["overview"].astype("str")
 titulos = " ".join(df["title"])
 overviews = " ".join(df["overview"])
 
-# Antes de crear la funcion, simplifico el dataframe para optimizar la recomendacion, en base al promedio de votos mayor a 7"
+# Antes de crear la funcion, simplifico el dataframe para optimizar el tiempo de la recomendacion en render
+# en base al promedio de votos mayor a 6 y popularidad mayor a 6"
 dfRec = df[["title", "overview", "vote_average","popularity"]]
 dfRec["overview"] = dfRec["overview"].fillna("")
 dfRec = dfRec[dfRec['vote_average'] > 6]
@@ -194,7 +195,7 @@ def recomendar_peliculas(titulo):
         vectorizer = TfidfVectorizer(stop_words='english')   # Creo el vectorizador TF-IDF
         matriz_tfidf = vectorizer.fit_transform(dfRec['overview']) # Obtengo la matriz TF-IDF de los resumenes de las peliculas
     
-        similitud = cosine_similarity(matriz_tfidf) #   # Calculo la similitud de coseno entre todos los pares de películas
+        similitud = cosine_similarity(matriz_tfidf) #   # Calculo la similitud de coseno entre todos los pares de peliculas
         indices_similares = similitud[indice_referencia].argsort()[::-1][1:6]  #Obtengo los indices de las 5 peliculas mas similares a la de referencia
     
         peliculas_recomendadas = dfRec.iloc[indices_similares]['title'].tolist()# Obtengo los titulos de las peliculas recomendadas

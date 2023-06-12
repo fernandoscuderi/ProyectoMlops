@@ -185,3 +185,4 @@ columnas = df.columns.tolist()
 crew = columnas.pop(columnas.index('crew'))
 columnas.insert(18, crew)
 df = df.reindex(columns=columnas)
+
