@@ -169,27 +169,22 @@ dfRec = dfRec[dfRec['vote_average'] > 7]
 
 #Creo la funcion que devuelve 5 recomendaciones al titulo pasado por parametro
 @app.get("/recomendacion/{titulo}")
-def recomendar_peliculas(titulo, df = None, top_n=5):
-   
-    if df is None:
-        df = dfRec
-
+def recomendar_peliculas2(titulo):
     titulo = titulo.lower()
     dfRec['title'] = dfRec['title'].str.lower()
     
     if titulo in dfRec["title"].values:
-
         indice_referencia = dfRec[dfRec['title'] == titulo].index[0] # Obtengo el indice del título de referencia
         vectorizer = TfidfVectorizer(stop_words='english')   # Creo el vectorizador TF-IDF
         matriz_tfidf = vectorizer.fit_transform(dfRec['overview']) # Obtengo la matriz TF-IDF de los resumenes de las peliculas
     
         similitud = cosine_similarity(matriz_tfidf) #   # Calculo la similitud de coseno entre todos los pares de películas
-        indices_similares = similitud[indice_referencia].argsort()[::-1][1:top_n+1]  #Obtengo los indices de las peliculas mas similares a la de referencia
+        indices_similares = similitud[indice_referencia].argsort()[::-1][1:6]  #Obtengo los indices de las 5 peliculas mas similares a la de referencia
     
         peliculas_recomendadas = dfRec.iloc[indices_similares]['title'].tolist()# Obtengo los titulos de las peliculas recomendadas
 
         peliculasUpper = [elemento.capitalize() for elemento in peliculas_recomendadas]
 
         return peliculasUpper
-    else: return "El titulo no fue encontrado"
+    else: return "La pelicula no fue encontrada"
     
