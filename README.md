@@ -4,7 +4,7 @@
 ## Links del proyecto
 ### *Acceso al repositorio GitHub : https://github.com/fernandoscuderi/ProyectoMlops*
 ### *Acceso al proyecto en Render : https://pi-ml-ops-fi7e.onrender.com/docs*
-### *Acceso al video de demostración :*
+### *Acceso al video de demostración :https://drive.google.com/file/d/1fZZ2ypMqjBfGlHqZTdd5AOyhMlvs9rok/view?usp=sharing*
 ---
 
 ## **Objetivo del proyecto: <br>**
