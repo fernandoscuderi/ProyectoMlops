@@ -169,7 +169,10 @@ dfRec = dfRec[dfRec['vote_average'] > 7]
 
 #Creo la funcion que devuelve 5 recomendaciones al titulo pasado por parametro
 @app.get("/recomendacion/{titulo}")
-def recomendar_peliculas(titulo, dfRec = dfRec, top_n=5):
+def recomendar_peliculas(titulo, df = None, top_n=5):
+   
+    if df is None:
+        df = dfRec
 
     titulo = titulo.lower()
     dfRec['title'] = dfRec['title'].str.lower()
