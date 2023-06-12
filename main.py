@@ -202,6 +202,6 @@ def recomendar_peliculas(titulo):
 
         peliculasUpper = [elemento.capitalize() for elemento in peliculas_recomendadas]
 
-        return peliculasUpper
+        return f" Las peliculas recomendadas son: {peliculasUpper}"
     else: return "La pelicula no fue encontrada"
     
