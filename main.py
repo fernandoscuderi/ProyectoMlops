@@ -1,13 +1,22 @@
-from fastapi import FastAPI
+#Importo librerias a utilizar
 import pandas as pd
 import numpy as np
 import ast
 from datetime import datetime
 import calendar
+import matplotlib.pyplot as plt
+import seaborn as sns
+import missingno as msno
+from wordcloud import WordCloud, STOPWORDS
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import warnings
+warnings.filterwarnings("ignore")
+from fastapi import FastAPI
 
 app = FastAPI()
 
-df = pd.read_csv('archivo.csv')
+df = pd.read_csv('df_limpio.csv')
 
 #http://127.0.0.1:8000
 df['release_date'] = pd.to_datetime(df['release_date'], format='%Y-%m-%d')
@@ -138,10 +147,46 @@ def get_director(nombre_director):
             retorno_individual.append(df["return"][i])
             costo.append(df["budget"][i])
             ganancia.append(df["revenue"][i])
-
-    #dfDirector = pd.DataFrame({'Peliculas': peliculas, 'Fecha': fecha, 'Retorno Individual': retorno_individual, "Costo" : costo, "Ganancia": ganancia})
     
     if peliculas:
         return {"Director": nombreMayus, "Retorno Total":cantidad_retorno, "Peliculas": peliculas, "Fecha": fecha, "Retorno_individual": retorno_individual, "Costo":costo, "Ganancia":ganancia}
     else: return "El director no fue encontrado"
+
+
+#Preparo las columnas title y overview para visualizar la nube de palabras de cada una
+df["title"] = df["title"].astype("str")
+df["overview"] = df["overview"].astype("str")
+titulos = " ".join(df["title"])
+overviews = " ".join(df["overview"])
+
+
+
+
+# Antes de crear la funcion, simplifico el dataframe para optimizar la recomendacion, en base al promedio de votos mayor a 7"
+dfRec = df[["title", "overview", "vote_average"]]
+dfRec["overview"] = dfRec["overview"].fillna("")
+dfRec = dfRec[dfRec['vote_average'] > 7]
+
+#Creo la funcion que devuelve 5 recomendaciones al titulo pasado por parametro
+@app.get("/recomendacion/{titulo}")
+def recomendar_peliculas(titulo, dfRec = dfRec, top_n=5):
+
+    titulo = titulo.lower()
+    dfRec['title'] = dfRec['title'].str.lower()
+    
+    if titulo in dfRec["title"].values:
+
+        indice_referencia = dfRec[dfRec['title'] == titulo].index[0] # Obtengo el indice del título de referencia
+        vectorizer = TfidfVectorizer(stop_words='english')   # Creo el vectorizador TF-IDF
+        matriz_tfidf = vectorizer.fit_transform(dfRec['overview']) # Obtengo la matriz TF-IDF de los resumenes de las peliculas
+    
+        similitud = cosine_similarity(matriz_tfidf) #   # Calculo la similitud de coseno entre todos los pares de películas
+        indices_similares = similitud[indice_referencia].argsort()[::-1][1:top_n+1]  #Obtengo los indices de las peliculas mas similares a la de referencia
+    
+        peliculas_recomendadas = dfRec.iloc[indices_similares]['title'].tolist()# Obtengo los titulos de las peliculas recomendadas
+
+        peliculasUpper = [elemento.capitalize() for elemento in peliculas_recomendadas]
+
+        return peliculasUpper
+    else: return "El titulo no fue encontrado"
     

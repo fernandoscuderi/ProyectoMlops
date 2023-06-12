@@ -4,6 +4,14 @@ import numpy as np
 import ast
 from datetime import datetime
 import calendar
+import matplotlib.pyplot as plt
+import seaborn as sns
+import missingno as msno
+from wordcloud import WordCloud, STOPWORDS
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+import warnings
+warnings.filterwarnings("ignore")
 
 # Leo los dataset con pandas
 dfMovies = pd.read_csv('movies_dataset.csv')
