@@ -42,6 +42,9 @@ def cantidad_filmaciones_mes(mes):
     else: return "El mes indicado no fue escrito correctamente"
 
 
+
+
+
     #Creo la funcion que devuelva la cantidad de peliculas estrenadas en el dia especificado por parametro, devuelve error de un mal ingreso de parametro y acepta mayuscula o minuscula.
 @app.get("/cantidad_filmaciones_dia/{dia}")
 def cantidad_filmaciones_dia(dia):
@@ -63,6 +66,9 @@ def cantidad_filmaciones_dia(dia):
     else: return "El dia indicado no fue escrito correctamente"
 
 
+
+
+
     #Creo funcion que devuelve la pelicula buscada, su año de estreno y el score asignado por TheMoviesDataBase. Devuelve error si no la encuentra y acepta mayusculas o minusculas.
 @app.get("/score_titulo/{titulo}")
 def score_titulo(titulo):
@@ -78,6 +84,9 @@ def score_titulo(titulo):
     if titulo_encontrado != 0:
         return "La pelicula " + titulo_encontrado + " fue estrenada en el año " + str(df["release_year"][indice]) +  " con una puntaje de " + str(df["popularity"][indice]) + " asignado por TheMoviesDataBase"
     else: return "La pelicula ingresada no fue encontrada" 
+
+
+
 
 
     #Creo funcion que devuelve la pelicula buscada con su año de estreno, cantidad de votos y promedio de puntajes. Devuelve error si no la encuentra y acepta mayusculas o minusculas.
@@ -96,6 +105,9 @@ def votos_titulo(titulo_film):
     if titulo_encontrado:
         return "La pelicula " + titulo_encontrado + " fue estrenada en el año " + str(df["release_year"][indice]) +  " y cuenta con un total de " + str(df["vote_count"][indice]) + " valoraciones, y su puntaje promedio de reseñas es de " + str(df["vote_average"][indice])
     else: return "La pelicula ingresada no fue encontrada"
+
+
+
 
 
     #Creo la funcion que devuelve el actor y sus participaciones en films, con sus respectivos retornos. Devuelve error si no encuentra y acepta nombres con o sin mayusculas.
@@ -119,6 +131,9 @@ def get_actor(nombre_actor):
     if cantidad_films != 0:
         return f"El actor {nombreMayus} ha participado de {cantidad_films} films y ha conseguido un retorno de {round(cantidad_retorno,2)}, con un promedio de {round(cantidad_retorno/cantidad_films,2)} por filmacion "
     else: return "El actor no fue encontrado"
+
+
+
 
 
     #Creo la funcion que recibe el nombre del director por parametro y devuelve un dataframe con informacion sobre las peliculas. Devuelve error si no encuentra el director y acepta mayusculas o minusculas.
@@ -153,14 +168,14 @@ def get_director(nombre_director):
     else: return "El director no fue encontrado"
 
 
+
+
+
 #Preparo las columnas title y overview para visualizar la nube de palabras de cada una
 df["title"] = df["title"].astype("str")
 df["overview"] = df["overview"].astype("str")
 titulos = " ".join(df["title"])
 overviews = " ".join(df["overview"])
-
-
-
 
 # Antes de crear la funcion, simplifico el dataframe para optimizar la recomendacion, en base al promedio de votos mayor a 7"
 dfRec = df[["title", "overview", "vote_average"]]
@@ -169,9 +184,9 @@ dfRec = dfRec[dfRec['vote_average'] > 7]
 
 #Creo la funcion que devuelve 5 recomendaciones al titulo pasado por parametro
 @app.get("/recomendacion/{titulo}")
-def recomendar_peliculas2(titulo):
-    titulo = titulo.lower()
-    dfRec['title'] = dfRec['title'].str.lower()
+def recomendar_peliculas(titulo):
+    #titulo = titulo.lower()
+    #dfRec['title'] = dfRec['title'].str.lower()
     
     if titulo in dfRec["title"].values:
         indice_referencia = dfRec[dfRec['title'] == titulo].index[0] # Obtengo el indice del título de referencia
