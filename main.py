@@ -178,15 +178,16 @@ titulos = " ".join(df["title"])
 overviews = " ".join(df["overview"])
 
 # Antes de crear la funcion, simplifico el dataframe para optimizar la recomendacion, en base al promedio de votos mayor a 7"
-dfRec = df[["title", "overview", "vote_average"]]
+dfRec = df[["title", "overview", "vote_average","popularity"]]
 dfRec["overview"] = dfRec["overview"].fillna("")
-dfRec = dfRec[dfRec['vote_average'] > 7]
+dfRec = dfRec[dfRec['vote_average'] > 6]
+dfRec = dfRec[dfRec['popularity'] > 6]
 
 #Creo la funcion que devuelve 5 recomendaciones al titulo pasado por parametro
 @app.get("/recomendacion/{titulo}")
 def recomendar_peliculas(titulo):
-    #titulo = titulo.lower()
-    #dfRec['title'] = dfRec['title'].str.lower()
+    titulo = titulo.lower()
+    dfRec['title'] = dfRec['title'].str.lower()
     
     if titulo in dfRec["title"].values:
         indice_referencia = dfRec[dfRec['title'] == titulo].index[0] # Obtengo el indice del título de referencia
