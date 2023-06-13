@@ -21,6 +21,10 @@ df = pd.read_csv('df_limpio.csv')
 #http://127.0.0.1:8000
 df['release_date'] = pd.to_datetime(df['release_date'], format='%Y-%m-%d')
 
+@app.get("/health")
+def health_check():
+    return {"status": "200 OK"}
+
 #Creo la funcion que devuelva la cantidad de peliculas estrenadas en el mes especificado por parametro, devuelve error de un mal ingreso de parametro y acepta mayusculas o minusculas.
 @app.get("/cantidad_filmaciones_mes/{mes}")
 def cantidad_filmaciones_mes(mes):
